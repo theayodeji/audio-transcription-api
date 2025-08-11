@@ -5,8 +5,10 @@ import json
 import os
 import subprocess
 import zipfile
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 MODEL_ZIP = "vosk-model-small-en-us-0.15.zip"
 MODEL_PATH = "vosk-model-small-en-us-0.15"
