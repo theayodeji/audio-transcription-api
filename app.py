@@ -4,20 +4,26 @@ import wave
 import json
 import os
 import subprocess
+import zipfile
 
 app = Flask(__name__)
 
-MODEL_PATH = "model"
+MODEL_ZIP = "vosk-model-small-en-us-0.15.zip"
+MODEL_PATH = "vosk-model-small-en-us-0.15"
 
-# Download Vosk model if not present
 def download_model():
     if not os.path.exists(MODEL_PATH):
         print("Downloading Vosk model...")
-        os.system("wget https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip -O model.zip")
-        os.system("unzip model.zip && rm model.zip")
-        print("Model download complete.")
+        os.system(f"wget https://alphacephei.com/vosk/models/{MODEL_ZIP} -O {MODEL_ZIP}")
+        print("Unzipping model...")
+        with zipfile.ZipFile(MODEL_ZIP, 'r') as zip_ref:
+            zip_ref.extractall(".")
+        os.remove(MODEL_ZIP)
+        print("Model ready!")
 
 download_model()
+
+# Now load the model from its actual folder name
 model = Model(MODEL_PATH)
 
 @app.route("/transcribe", methods=["POST"])
